@@ -1,11 +1,14 @@
-const http = require("http");
+const net = require("net");
 
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { "Content-Type": "text/plain" });
-  res.end("Hello, World!");
-});
+const handleConnection = socket => {
+  socket.on("data", data => {
+    socket.write("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello, World!");
+    socket.end();
+  });
+};
+
+const server = net.createServer(handleConnection);
 server.maxConnections = 1000;
-
 server.listen(8000, () => {
   console.log("Server running at http://localhost:8000/");
 });
